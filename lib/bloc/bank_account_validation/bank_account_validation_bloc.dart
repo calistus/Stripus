@@ -33,8 +33,10 @@ class BankAccountValidationBloc
     try {
       AccountValidatorModel accountValidation = await accountValidationRepository
           .validateAccount(bankAccount, sortCodes);
+      print(accountValidation.toJson());
       yield BankAccountValidationLoaded(accountValidation);
     } catch (e) {
+      print(e.toString);
       yield BankAccountValidationError(e.toString());
     }
   }

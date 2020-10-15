@@ -86,13 +86,20 @@ class _AccountValidationScreenState extends State<AccountValidationScreen> {
 
                       const SizedBox(height: 20.0),
 
-                      BlocListener<BankAccountValidationBloc, BankAccountValidationState>(listener: (context, state) {
+                      BlocConsumer<BankAccountValidationBloc, BankAccountValidationState>(listener: (context, state) {
                         if(state is BankAccountValidationLoading){
                           return CircularProgressIndicator();
                         } else if(state is BankAccountValidationLoaded){
-                          return Text(state.accountValidation.items[0].toString());
+                          return Text(state.accountValidation.toString());
                         }else if(state is BankAccountValidationError){
                           return Text(state.message);
+                        }
+                        return Container();
+                      },builder: (context, state) {
+                        if(state is BankAccountValidationLoading){
+                          return CircularProgressIndicator();
+                        }else if(state is BankAccountValidationLoaded){
+                          return  Text(state.accountValidation.toString());
                         }
                         return Container();
                       },)
