@@ -2,28 +2,22 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:stripe_payment/stripe_payment.dart';
+import 'package:stripus/model/stripe_transaction_response.dart';
 import 'package:stripus/secret/api_keys.dart';
 
-class StripeTransactionResponse {
-  String message;
-  bool success;
-  String responseStatus;
-  StripeTransactionResponse({this.message, this.success, this.responseStatus});
-}
-
-class StripeService {
+class StripeRepository {
   static String apiBase = 'https://api.stripe.com/v1';
-  static String paymentApiUrl = '${StripeService.apiBase}/payment_intents';
+  static String paymentApiUrl = '${StripeRepository.apiBase}/payment_intents';
   static String secret = APIKeys.STRIPE_TEST_API_SECRET;
   static Map<String, String> headers = {
-    'Authorization': 'Bearer ${StripeService.secret}',
+    'Authorization': 'Bearer ${StripeRepository.secret}',
     'Content-Type': 'application/x-www-form-urlencoded'
   };
   static init() {
     StripePayment.setOptions(
       StripeOptions(
         publishableKey: APIKeys.STRIPE_TEST_API_PUBLISHABLE_KEY,
-        merchantId: "HaveMyRoom",
+        merchantId: "Hilary",
         androidPayMode: 'test'
       )
     );
@@ -34,7 +28,7 @@ class StripeService {
       var paymentMethod = await StripePayment.createPaymentMethod(
         PaymentMethodRequest(card: card)
       );
-      var paymentIntent = await StripeService.createPaymentIntent(
+      var paymentIntent = await StripeRepository.createPaymentIntent(
         amount,
         currency, receiptEmail,description
       );
@@ -58,7 +52,7 @@ class StripeService {
         );
       }
     } on PlatformException catch(err) {
-      return StripeService.getPlatformExceptionErrorResult(err);
+      return StripeRepository.getPlatformExceptionErrorResult(err);
     } catch (err) {
       print(err.toString());
       return new StripeTransactionResponse(
@@ -68,12 +62,12 @@ class StripeService {
     }
   }
 
-  static Future<StripeTransactionResponse> payWithNewCard({String amount, String currency, String receiptEmail, String description}) async {
+   Future<StripeTransactionResponse> payWithNewCard({String amount, String currency, String receiptEmail, String description}) async {
     try {
       var paymentMethod = await StripePayment.paymentRequestWithCardForm(
         CardFormPaymentRequest()
       );
-      var paymentIntent = await StripeService.createPaymentIntent(
+      var paymentIntent = await StripeRepository.createPaymentIntent(
         amount,
         currency, receiptEmail, description
       );
@@ -97,7 +91,7 @@ class StripeService {
         );
       }
     } on PlatformException catch(err) {
-      return StripeService.getPlatformExceptionErrorResult(err);
+      return StripeRepository.getPlatformExceptionErrorResult(err);
     } catch (err) {
       return new StripeTransactionResponse(
         message: 'Transaction failed: ${err.toString()}',
@@ -128,9 +122,9 @@ class StripeService {
         'payment_method_types[]': 'card'
       };
       var response = await http.post(
-        StripeService.paymentApiUrl,
+        StripeRepository.paymentApiUrl,
         body: body,
-        headers: StripeService.headers
+        headers: StripeRepository.headers
       );
       return jsonDecode(response.body);
     } catch (err) {
