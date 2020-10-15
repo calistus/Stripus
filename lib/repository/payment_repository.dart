@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:stripe_payment/stripe_payment.dart';
+import 'package:stripus/model/loqate_validate_model.dart';
 import 'package:stripus/model/stripe_transaction_response.dart';
 import 'package:stripus/secret/api_keys.dart';
 
@@ -99,4 +100,6 @@ class StripeRepository {
     }
     return null;
   }
+
+
 }

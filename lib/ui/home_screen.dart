@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stripus/bloc/payment/payment_bloc.dart';
+import 'package:stripus/repository/account_validation_repository.dart';
 import 'package:stripus/repository/payment_repository.dart';
 import 'package:sweetalert/sweetalert.dart';
 
@@ -63,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 RaisedButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    await AccountValidationRepository().validateAccount("", "");
                      },
                   color: Colors.blueAccent,
                   textColor: Colors.white,
