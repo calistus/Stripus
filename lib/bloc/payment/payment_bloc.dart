@@ -27,14 +27,18 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
   Stream<PaymentState> _mapPayWithCardToState(String amount, String currency,
       String description, String receiptEmail) async* {
+    yield PaymentProcessing();
+    print(currency+"1");
     StripeTransactionResponse response = await stripeRepository.payWithNewCard(
         amount: amount,
-        currency: 'USD',
+        currency: currency,
         description: description,
         receiptEmail: receiptEmail);
+
     if (response.responseStatus == 'succeeded') {
       yield PaymentSuccessful(response);
     } else {
+      print(response.message);
       yield PaymentError(response);
     }
   }

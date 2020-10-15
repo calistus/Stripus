@@ -23,50 +23,15 @@ class StripeRepository {
     );
   }
 
-  static Future<StripeTransactionResponse> payViaExistingCard({String amount, String currency, String receiptEmail, CreditCard card, String description}) async{
-    try {
-      var paymentMethod = await StripePayment.createPaymentMethod(
-        PaymentMethodRequest(card: card)
-      );
-      var paymentIntent = await StripeRepository.createPaymentIntent(
-        amount,
-        currency, receiptEmail,description
-      );
-      var response = await StripePayment.confirmPaymentIntent(
-        PaymentIntent(
-          clientSecret: paymentIntent['client_secret'],
-          paymentMethodId: paymentMethod.id
-        )
-      );
-      if (response.status == 'succeeded') {
-        return new StripeTransactionResponse(
-          message: 'Transaction successful',
-          responseStatus: response.status,
-          success: true
-        );
-      } else {
-        return new StripeTransactionResponse(
-          message: 'Transaction failed',
-            responseStatus: response.status,
-            success: false
-        );
-      }
-    } on PlatformException catch(err) {
-      return StripeRepository.getPlatformExceptionErrorResult(err);
-    } catch (err) {
-      print(err.toString());
-      return new StripeTransactionResponse(
-        message: 'Transaction failed: ${err.toString()}',
-        success: false
-      );
-    }
-  }
 
    Future<StripeTransactionResponse> payWithNewCard({String amount, String currency, String receiptEmail, String description}) async {
     try {
+
       var paymentMethod = await StripePayment.paymentRequestWithCardForm(
         CardFormPaymentRequest()
       );
+      print(currency);
+
       var paymentIntent = await StripeRepository.createPaymentIntent(
         amount,
         currency, receiptEmail, description
@@ -101,6 +66,7 @@ class StripeRepository {
   }
 
   static getPlatformExceptionErrorResult(err) {
+    print(err);
     String message = 'Something went wrong';
     if (err.code == 'cancelled') {
       message = 'Transaction cancelled';
@@ -113,6 +79,7 @@ class StripeRepository {
   }
 
   static Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency, String receiptEmail, String description) async {
+    print(currency);
     try {
       Map<String, dynamic> body = {
         'amount': amount,
