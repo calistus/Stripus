@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stripus/bloc/payment/payment_bloc.dart';
 import 'package:stripus/repository/account_validation_repository.dart';
 import 'package:stripus/repository/payment_repository.dart';
+import 'package:stripus/ui/account_validation_screen.dart';
 import 'package:sweetalert/sweetalert.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 RaisedButton(
                   onPressed: () async{
-                    await AccountValidationRepository().validateAccount("", "");
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AccountValidationScreen(title: 'Account Validation'),));
                      },
                   color: Colors.blueAccent,
                   textColor: Colors.white,
